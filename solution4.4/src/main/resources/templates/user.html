@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+          crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+            crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+
+
+<nav class="container-fluid navbar navbar-dark bg-dark" style="min-width: 671px">
+    <div class="container-fluid">
+        <ul class="nav">
+            <a class="nav-link " th:text="${#authentication.getName()}" id="authUserName"></a>
+            <a class="nav-link">with roles</a>
+            <a class="nav-link " th:text="${#authentication.getAuthorities()}"></a>
+        </ul>
+
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark " style="min-width: auto; max-width: 16%">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                <a href="/admin/showList" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <span class="fs-5 d-none d-sm-inline">Menu</span>
+                </a>
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                    <li>
+                        <a th:href="@{/admin/showList}" class="nav-link px-0 align-middle">
+                            <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Admin</span> </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/user}" class="nav-link px-0 align-middle">
+                            <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">User</span> </a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+
+        <div class="container-fluid col py-3">
+            <div class="container-fluid d-flex bd-highlight">
+                <h2>User Page</h2>
+            </div>
+
+
+            <div class="container-fluid mt-3 table-responsive">
+                <table id="table" class="table  table-hover table-secondary overflow-x:auto;">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Age</th>
+                        <th>Email</th>
+                        <th>Roles</th>
+                    </tr>
+                    </thead>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        let authName= $("#authUserName").text();
+        console.log(authName);
+     showUser(authName);
+    })
+
+
+    function showUser(name) {
+        fetch('/user/getAuthUser/' + name)
+            .then(function (a) {
+                return a.json();
+            })
+            .then(function (json) {
+                JSON.stringify(json);
+                $("#table").find("tr:gt(0)").remove();
+                    $('#table').append(`
+    <tr>
+            <td>${json.id}</td>
+            <td>${json.username}</td>
+            <td>${json.lastName}</td>
+            <td>${json.age}</td>
+            <td>${json.email}</td>
+            <td>${json.stringRoles}</td>
+
+    </tr>
+
+                    `)
+
+                });
+    }
+
+
+</script>
+
+</body>
+</html>
+
+
